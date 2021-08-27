@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,400;0,700;1,500&display=swap" rel="stylesheet"> 
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+  <title>Frontend Mentor | IP Address Tracker</title>
+
+  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
+  <style>
+    .attribution { font-size: 11px; text-align: center; }
+    .attribution a { color: hsl(228, 45%, 44%); }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>IP Address Tracker</h1>
+      <form action="">
+        <input type="text" placeholder="Search for any IP address or domain" onclick=clearField()>
+        <button onclick=searchIp()></button>
+      </form>
+    </header>
+    <section class="info">
+      <div class="info-border">
+        IP Address:<br>
+        <div class="result myIp"></div>
+      </div>
+      <div class="info-border">
+        Location:<br>
+        <div class="result myLocation"></div>
+      </div>
+      <div class="info-border">
+        Timezone:<br>
+        <div class="result myTZ"></div>
+      </div>
+      <div>
+        ISP:<br>
+        <div class="result myISP"></div>
+      </div>
+    </section>
+  </main>
+  <section class="map">
+    <div id="mapid"></div>
+  </section>
+  <div class="attribution">
+    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
+    Coded by <a href="https://www.linkedin.com/in/elvisstiglic/" target="_new">Elvis Stiglic</a>.
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript">
+
+    // Clear search field
+    function clearField(){
+      document.querySelector("input").value = "";
+    }
+
+      let apiKey = "at_hBKCHtC3dxKE0yQb0JdYr0fpBfwXr";
+      let ipAddress = "";
+      $.getJSON("https://geo.ipify.org/api/v1?apiKey=" + apiKey + "&ipAddress=" + ipAddress, function(data){
+      var myLocation = data.location.city + ", " + data.location.region + "<br>" + data.location.postalCode;
+      var myTZ = data.location.timezone;
+      var myISP = data.isp;
+      
+      $(".myIp").append(data.ip);
+      $(".myLocation").append(myLocation);
+      $(".myTZ").append(myTZ);
+      $(".myISP").append(myISP);
+
+      // Display current IP in Search field
+      document.querySelector("input").value = data.ip;
+      // 192.212.174.101
+      
+      // Display map
+      var mymap = L.map('mapid').setView([data.location.lat, data.location.lng], 13);
+
+      L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: 'pk.eyJ1IjoibnVrZXR1cnRsZSIsImEiOiJja3N1MHhxMGMwOGFlMzBuMm4weXB0cWRjIn0.zBcoEuPMAEiqV-f-xok0-A'
+      }).addTo(mymap);
+
+      console.log(data);
+      
+    });
+        
+
+    // Search for custom IP when button is clicked
+    function searchIp(){
+        ipAddress = document.querySelector("input").value;
+      }
+  </script>
+</body onload="$()>
+</html>
